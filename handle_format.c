@@ -1,42 +1,53 @@
-#include "main.h"
-
 /**
- * handle_format - Handles format specifiers for _printf
+ * handle_format_buffer - Handles format specifiers with buffer
  * @format: Format string
  * @args: Argument list
- * @i: Current index in format string (pointer)
- * Return: Number of characters printed or -1 on error
+ * @i: Current index
+ * @buffer: Buffer to write to
+ * @buf_len: Pointer to buffer length
+ *
+ * Return: Number of characters written or -1 on error
  */
-int handle_format(const char *format, va_list args, int *i)
+int handle_format_buffer(const char *format, va_list args, int *i,
+			 char *buffer, int *buf_len)
 {
 	int printed = 0;
+	char temp[100];
+	int len;
 
 	if (!format[*i])
 		return (-1);
 
 	if (format[*i] == 'c')
-		printed += print_char(args);
+	{
+		char c = va_arg(args, int);
+		buffer[(*buf_len)++] = c;
+		printed = 1;
+	}
 	else if (format[*i] == 's')
-		printed += print_string(args);
+	{
+		char *str = va_arg(args, char *);
+		if (!str)
+			str = "(null)";
+		for (len = 0; str[len]; len++)
+		{
+			buffer[(*buf_len)++] = str[len];
+			if (*buf_len == 1024)
+				flush_buffer(buffer, buf_len);
+		}
+		printed = len;
+	}
 	else if (format[*i] == '%')
-		printed += print_percent();
-	else if (format[*i] == 'd' || format[*i] == 'i')
-		printed += print_int(args);
-	else if (format[*i] == 'b')
-        	printed += print_binary(args);
-	else if (format[*i] == 'u')
-        	printed += print_unsigned(args);
-        else if (format[*i] == 'o')
-        	printed += print_octal(args);
-        else if (format[*i] == 'x')
-        	printed += print_hex_lower(args);
-        else if (format[*i] == 'X')
-        	printed += print_hex_upper(args);
+	{
+		buffer[(*buf_len)++] = '%';
+		printed = 1;
+	}
+	/* Extend this to call print_int_buffer, print_unsigned_buffer, etc. */
 	else
 	{
-		write(1, "%", 1);
-		write(1, &format[*i], 1);
-		printed += 2;
+		buffer[(*buf_len)++] = '%';
+		buffer[(*buf_len)++] = format[*i];
+		printed = 2;
 	}
 	(*i)++;
 	return (printed);

@@ -17,5 +17,6 @@ int print_octal(va_list args);
 int print_hex_lower(va_list args);
 int print_hex_upper(va_list args);
 int print_base(unsigned int n, int base, int uppercase);
+void flush_buffer(char *buffer, int *len);
 
 #endif
