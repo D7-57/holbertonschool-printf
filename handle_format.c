@@ -22,6 +22,8 @@ int handle_format(const char *format, va_list args, int *i)
 		printed += print_percent();
 	else if (format[*i] == 'd' || format[*i] == 'i')
 		printed += print_int(args);
+	else if (format[*i] == 'b')
+        	printed += print_binary(args);
 	else
 	{
 		write(1, "%", 1);
