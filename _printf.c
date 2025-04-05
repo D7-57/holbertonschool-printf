@@ -1,10 +1,15 @@
 #include "main.h"
 
+/**
+ * _printf - Produces output according to a format
+ * @format: Format string containing the characters and the specifiers
+ * Return: Number of characters printed
+ */
 int _printf(const char *format, ...)
 {
 	va_list args;
 	int i = 0, count = 0;
-	
+
 	if (!format)
 		return (-1);
 
@@ -25,7 +30,7 @@ int _printf(const char *format, ...)
 			else if (format[i] == '%')
 				count += print_percent();
 			else if (format[i] == 'd' || format[i] == 'i')
-	                        count += print_int(args);
+				count += print_int(args);
 			else
 			{
 				write(1, "%", 1);
