@@ -24,6 +24,14 @@ int handle_format(const char *format, va_list args, int *i)
 		printed += print_int(args);
 	else if (format[*i] == 'b')
         	printed += print_binary(args);
+	else if (format[*i] == 'u')
+        	printed += print_unsigned(args);
+        else if (format[*i] == 'o')
+        	printed += print_octal(args);
+        else if (format[*i] == 'x')
+        	printed += print_hex_lower(args);
+        else if (format[*i] == 'X')
+        	printed += print_hex_upper(args);
 	else
 	{
 		write(1, "%", 1);
