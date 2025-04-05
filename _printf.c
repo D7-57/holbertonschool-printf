@@ -2,13 +2,13 @@
 
 /**
  * _printf - Produces output according to a format
- * @format: Format string containing the characters and the specifiers
+ * @format: Format string containing characters and specifiers
  * Return: Number of characters printed
  */
 int _printf(const char *format, ...)
 {
 	va_list args;
-	int i = 0, count = 0;
+	int i = 0, count = 0, printed;
 
 	if (!format)
 		return (-1);
@@ -20,30 +20,17 @@ int _printf(const char *format, ...)
 		if (format[i] == '%')
 		{
 			i++;
-			if (!format[i])
+			printed = handle_format(format, args, &i);
+			if (printed == -1)
 				return (-1);
-
-			if (format[i] == 'c')
-				count += print_char(args);
-			else if (format[i] == 's')
-				count += print_string(args);
-			else if (format[i] == '%')
-				count += print_percent();
-			else if (format[i] == 'd' || format[i] == 'i')
-				count += print_int(args);
-			else
-			{
-				write(1, "%", 1);
-				write(1, &format[i], 1);
-				count += 2;
-			}
+			count += printed;
 		}
 		else
 		{
 			write(1, &format[i], 1);
 			count++;
+			i++;
 		}
-		i++;
 	}
 
 	va_end(args);
